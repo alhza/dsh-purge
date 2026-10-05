@@ -1,3 +1,27 @@
+# 1.1.60
+
+## 中文
+
+- 版本升级到 1.1.60。
+- 新增自循环看门狗：实时盯输出流，发现「让我写 → 好的 → 接下来 → 执行」这类不含交付物的元指令空转，立即截断这一轮并推一条兑现约束重跑。
+- 同时覆盖思维链通道（`reasoning-delta`）与可见正文通道（`text-delta`）。CoT 是最容易自循环的地方，只盯正文会完全漏掉。
+- 尾部周期检测：结尾把同一串 token 连排 6 次以上即判循环。这是结构性证据，不受最短长度限制，也不吃交付物豁免——复读代码块同样要拦。
+- 排除纯分隔符重复（表格线、缩进、注释框），避免把正常长文误伤。
+- 历史层按引用身份把被截断的退化消息从模型请求里摘掉，不让它成为下一轮先验。`interrupted` 挂在事件 data 上而不在 message 上，所以只能认事件引用。
+- 打断用 `cancel({kind:'user'})` 并带 `keepInbox`，只掐当前这一轮，保住用户已排队的输入。
+- `/purge status` 新增看门狗状态行；`loopBreaker` / `loopBreakerMaxTrips` / `loopBreakerMinChars` 可配，默认开启。
+
+## English
+
+- Version 1.1.60.
+- New self-loop watchdog: watches the output stream live and, on detecting content-free meta-instruction spinning ("let me write, okay, next, execute"), cuts the attempt off and re-prompts with a delivery constraint.
+- Covers both the reasoning channel (`reasoning-delta`) and the visible text channel (`text-delta`). CoT is where these loops actually happen; watching only visible text misses them entirely.
+- Tail-cycle detection: a unit of up to 64 characters repeated 6 or more times at the tail counts as a loop. It is structural evidence, so it ignores the minimum-length gate and the deliverable exemption — a repeated code block still counts.
+- Pure separator runs (table rules, indentation, comment boxes) are excluded so ordinary long documents are never flagged.
+- The history layer drops the truncated degenerate message from the model request by object identity. `interrupted` lives on the event data, not on the message, so identity is the only reliable match.
+- Interruption uses `cancel({kind:'user'})` with `keepInbox`, so only the current attempt is cut and queued user input survives.
+- `/purge status` gains a watchdog line; `loopBreaker` / `loopBreakerMaxTrips` / `loopBreakerMinChars` are configurable, on by default.
+
 # 1.1.59
 
 ## 中文
