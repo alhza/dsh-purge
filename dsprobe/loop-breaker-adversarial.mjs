@@ -1,5 +1,6 @@
 // 对抗性边界验证：真循环必须抓住，正常输出必须放过。
-import { detectDegenerate } from "file:///D:/Code/DeepSeek/lib/loop-breaker.js";
+const LIB = new URL("../lib/loop-breaker.js", import.meta.url).href;
+const { detectDegenerate } = await import(LIB);
 
 const cases = [
   ["英文元指令循环", "Let me write this. Okay, now I will start. Next I will proceed. ".repeat(20), true],

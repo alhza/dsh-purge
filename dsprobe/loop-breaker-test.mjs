@@ -1,5 +1,6 @@
 // loop-breaker 自测：不启动宿主，直接验证判定逻辑与拦截行为。
-import {
+const LIB = new URL("../lib/loop-breaker.js", import.meta.url).href;
+const {
   detectDegenerate,
   isDegenerateMessage,
   normalizeLoopConfig,
@@ -8,7 +9,7 @@ import {
   wrapSessionLoopFilter,
   tailRepeat,
   deltaOf,
-} from "file:///D:/Code/DeepSeek/lib/loop-breaker.js";
+} = await import(LIB);
 
 let pass = 0;
 let fail = 0;
