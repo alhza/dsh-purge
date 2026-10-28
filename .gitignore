@@ -32,3 +32,6 @@ default-prompt-inject.md
 /official-harness-payload.7z
 *.asar
 *.asar.bak
+
+# 自证基线产物（本机证据，不入库）
+bench/runs/

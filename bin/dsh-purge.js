@@ -24,10 +24,11 @@ function printStatus(state) {
   out.push(`  注入文件       ${state.override_path}`);
   out.push(`  注入状态       ${state.override_status}`);
   out.push("");
-  out.push(`  补丁 ${state.patches_applied}/${core.ALL_PATCHES.length} 已清洗, ${state.patches_pending} 待清洗`);
+  out.push(`  补丁 ${state.patches_applied}/${core.ALL_PATCHES.length} 已清洗, ${state.patches_pending} 待清洗`
+    + (state.patches_unmatched ? `, ${state.patches_unmatched} 锚点失配` : ""));
   for (const p of core.ALL_PATCHES) {
     const s = state.patch_status[p.id];
-    const mark = s === "applied" ? "✓" : s === "pending" ? "✗" : "·";
+    const mark = s === "applied" ? "✓" : s === "pending" ? "✗" : s === "unmatched" ? "≠" : "·";
     out.push(`    ${mark} [#${String(p.id).padEnd(2)}] ${p.name.padEnd(30)} ${p.layer}/${p.layer_en} — ${s}`);
   }
   out.push("");

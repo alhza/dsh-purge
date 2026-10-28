@@ -140,7 +140,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"welcome.lead": "首次安装本插件时请阅读以下说明。确认后本窗不再弹出。",
 			"welcome.warn": "本插件免费开源。任何背着作者私自售卖、付费倒卖或借本项目盈利的行为，作者将依法追究法律责任。",
 			"welcome.body": "dsh-purge 是 DeepSeek Harness 的本机网络安全红队评测与清洗插件：在受控本机环境中调整提示词与补丁、做授权范围内的演练台操作。项目免费、非营利，源码仓库：",
-			"welcome.repo": "https://github.com/YuJunZhiXue/dsh-purge",
+			"welcome.repo": "https://github.com/alhza/dsh-purge",
 			"welcome.ban1": "禁止将本项目用于未授权的网络攻击、入侵、窃取数据、破坏系统或任何违法犯罪。",
 			"welcome.ban2": "禁止商业售卖、付费倒卖、黑灰产牟利，以及隐瞒作者的营利性再分发。",
 			"welcome.ban3": "使用者须自行遵守所在地法律法规与平台规范；违法后果由行为人自行承担，与作者无关。",
@@ -174,11 +174,6 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"theme.ink": "墨",
 			"purge.title": "补丁",
 			"override.title": "提示词",
-			"own.title": "本地靶场",
-			"own.hint": "开源版攻击任务只放行本机/内网 IP。域名会先解析，解析到的每一个地址都必须是私网或回环；hosts 把 .lab 指到公网 IP 也会拦。解析失败或混有公网地址一律拦截。",
-			"own.save": "保存名单",
-			"saved.own": "已保存自己的服务器",
-			"saved.own.dropped": "已保存。有 {n} 行不是单个 IP 或主机名，已丢掉",
 			"metric.purged": "已写入",
 			"metric.purged.skip": "已写入。跳过 {n} 项，本机没有这些文件",
 			"metric.pendingShort": "待处理 {n}",
@@ -498,7 +493,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"welcome.lead": "Please read this on first install. After you confirm, it will not appear again.",
 			"welcome.warn": "This plugin is free and open source. Anyone who sells, resells, or profits from it behind the author's back may face legal action.",
 			"welcome.body": "dsh-purge is a local DeepSeek Harness plugin for security evaluation and cleaning: adjust prompts and patches on a machine you control, and use the drill console only within authorized scope. It is free and non-profit. Repository:",
-			"welcome.repo": "https://github.com/YuJunZhiXue/dsh-purge",
+			"welcome.repo": "https://github.com/alhza/dsh-purge",
 			"welcome.ban1": "Do not use this project for unauthorized attacks, intrusion, data theft, sabotage, or any illegal activity.",
 			"welcome.ban2": "Do not commercially sell, resell, or profit from gray-market use, or redistribute for profit without the author.",
 			"welcome.ban3": "You must follow local law and platform rules; illegal use is solely your responsibility.",
@@ -532,11 +527,6 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"theme.ink": "Ink",
 			"purge.title": "Patches",
 			"override.title": "Prompt",
-			"own.title": "Local lab only",
-			"own.hint": "The open-source build only allows localhost/private IPs. Domains are resolved first; every A/AAAA must be loopback or RFC1918. A hosts entry that points .lab at a public IP is blocked. Failed or mixed public answers are denied.",
-			"own.save": "Save list",
-			"saved.own": "Own servers saved",
-			"saved.own.dropped": "Saved. {n} lines were not a single IP or hostname and were dropped",
 			"metric.purged": "Written",
 			"metric.purged.skip": "Written. Skipped {n}; those files are not on this install",
 			"metric.pendingShort": "Pending {n}",
@@ -1516,8 +1506,6 @@ body[data-ds-dark-theme] .dshp-launch{background:color-mix(in srgb,var(--dsw-ali
 			const [override, setOverride] = useState("");
 			const [defaultOverride, setDefaultOverride] = useState("");
 			const [overrideLoaded, setOverrideLoaded] = useState(false);
-			const [ownServers, setOwnServers] = useState("");
-			const [ownLoaded, setOwnLoaded] = useState(false);
 			const [patchBusy, setPatchBusy] = useState(false);
 			const [updateBusy, setUpdateBusy] = useState(false);
 			const [canApplyUpdate, setCanApplyUpdate] = useState(false);
@@ -1726,14 +1714,6 @@ body[data-ds-dark-theme] .dshp-launch{background:color-mix(in srgb,var(--dsw-ali
 						else setNotice({ kind: "error", text: tr("err.override", { error: (d && d.error) || "" }) });
 					})
 					.catch((e) => setNotice({ kind: "error", text: tr("err.override", { error: e.message }) }));
-				apiJson("/dsh-purge/own-servers")
-					.then((d) => {
-						if (d && d.ok) {
-							setOwnServers(typeof d.content === "string" ? d.content : "");
-							setOwnLoaded(true);
-						}
-					})
-					.catch(() => {});
 			}, []);
 
 			useEffect(() => {
@@ -2194,10 +2174,6 @@ body[data-ds-dark-theme] .dshp-launch{background:color-mix(in srgb,var(--dsw-ali
 					className: "dshp-hint",
 					style: { margin: "8px 0 0", color: "var(--dshp-danger, #c44)", fontSize: 12 },
 				}, t("need.prompt")) : null,
-				h("div", { className: "dshp-sub" },
-					h("h4", null, t("own.title")),
-				),
-				h("p", { className: "dshp-hint", style: { margin: "8px 0 0", color: "var(--dshp-mute)", fontSize: 12 } }, t("own.hint")),
 			);
 		}
 
